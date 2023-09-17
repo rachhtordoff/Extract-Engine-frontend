@@ -3,24 +3,64 @@
     <base href="{{request.url_root}}">
     {% block meta %}<meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-    <!-- css includes -->
-    <link rel="stylesheet" href="{{config.CDN_URL}}/static/css/bootstrap.min.css">
-    <script src="{{config.CDN_URL}}/static/js/optistack_style_loader.js"></script>
-    <link rel="stylesheet" href="{{config.CDN_URL}}/static/css/newlogin_stylesheet.css">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Extract Engine - {{ page }}</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+  <link href="{{ url_for('static', filename='img/favicon.png') }}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+
+  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/quill/quill.snow.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/quill/quill.snow.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/simple-datatables/style.css') }}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
 
     {% block style %}{% endblock %}
   </head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<body class="bg-gradient-primary">
-  <div class="container">
+
+  <body>
 
       {% block content %}{% endblock %}
-    </div>
-  </body>
 
-  <!-- script includes -->
-  <script src="{{config.CDN_URL}}/static/js/jquery.min.js"></script>
-  <script src="{{config.CDN_URL}}/static/js/bootstrap.min.js"></script>
+
+  <!-- Vendor JS Files -->
+
+  <script href="{{ url_for('static', filename='vendor/apexcharts/apexcharts.min.js') }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/chart.js/chart.umd.js') }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/echarts/echarts.min.js) }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/quill/quill.min.js') }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/simple-datatables/simple-datatables.js') }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/tinymce/tinymce.min.js') }}" rel="stylesheet"></script>
+  <script href="{{ url_for('static', filename='vendor/php-email-form/validate.js') }}" rel="stylesheet"></script>
+
+  <!-- Template Main JS File -->
+  <script href="{{ url_for('static', filename='js/main.js') }}" rel="stylesheet"></script>
+
+</body>
+
   {% block script %}{% endblock %}
 
 
