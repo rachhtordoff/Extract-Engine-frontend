@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block meta %}
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+
+<div style="margin-top:70px;">
+
+<div class="row" >
+  <div class="col-sm-12">
+
+  {% if error == "pass-not-set" %}
+  <div class="alert alert-danger">
+    <strong>Error!</strong> Password not set, you may be using an old reset password link. Please click <b><a href="{{login_fe}}/login/reset_pass?">here</a></b> to re-enter your email and request a new link.
+  </div><br>
+  {% elif error == "expired" %}
+  <div class="alert alert-danger">
+    <strong>Error!</strong> Your reset password link has expired. Please click <b><a href="{{login_fe}}/login/reset_pass?">here</a></b> to re-enter your email and request a new link.
+  </div><br>
+
+  {% elif error == "invalid-link" %}
+  <div class="alert alert-danger">
+    <strong>Error!</strong> The reset password link is not valid. Please click <b><a href="{{login_fe}}/login/reset_pass?">here</a></b> to re-enter your email and request a new link.
+  </div><br>
+
+
+  {% endif %}
+</div>
+</div>
+
+<div class="row" >
+
+  <div class="text-center">
+
+    <img class="img-logo img-responsive" src="#" id="logo">
+  </div>
+
+  </div>
+  <br>
+  <div class="row" >
+
+  <div class="col-xl-12 col-lg-12 col-md-12">
+
+  <div class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+      <!-- Nested Row within Card Body -->
+      <div class="row">
+        <div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
+        <div class="col-lg-6">
+          <div class="p-5">
+            <br>
+            <div class="text-center">
+              <h1 class="h2 text-gray-900 mb-2">Set your New Password!<h1><br><br>
+              <h4 class="mb-4">We have created an account for you, all you need to do is set your password and you'll be re-directed to the login page!</h4>
+            </div>
+            <br>
+            <form action="./login/new_pass/{{email}}/{{random}}" id="new-pass" method="POST">
+              <div class="form-group">
+                <input style="font-size: 12px;"type="password" name="password"class="form-control form-control-user" id="exampleInputPassword"  placeholder="Enter Password...">
+              </div>
+
+              <div class="form-group">
+
+                <label class="csstext">  <input type="checkbox" onclick="unhidepassword()"> Show Password  </label>
+                </div>
+              <button type="submit"class="btn btn-primary btn-user btn-block">
+
+                <h4>    Set Password</h4>
+                </button>
+
+            </form>
+            <hr>
+            <br>
+            <div class="text-center">
+              <a href="./login">Already have an account? Login!</a>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+function unhidepassword() {
+  var x = document.getElementById("exampleInputPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+</script>
+
+
+
+
+
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

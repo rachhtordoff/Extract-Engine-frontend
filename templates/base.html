@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <base href="{{request.url_root}}">
+    {% block meta %}<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+    <!-- css includes -->
+    <link rel="stylesheet" href="{{config.CDN_URL}}/static/css/bootstrap.min.css">
+    <script src="{{config.CDN_URL}}/static/js/optistack_style_loader.js"></script>
+    <link rel="stylesheet" href="{{config.CDN_URL}}/static/css/newlogin_stylesheet.css">
+
+    {% block style %}{% endblock %}
+  </head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body class="bg-gradient-primary">
+  <div class="container">
+
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+
+  <!-- script includes -->
+  <script src="{{config.CDN_URL}}/static/js/jquery.min.js"></script>
+  <script src="{{config.CDN_URL}}/static/js/bootstrap.min.js"></script>
+  {% block script %}{% endblock %}
+
+
+</html>
