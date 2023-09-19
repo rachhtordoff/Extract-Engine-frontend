@@ -1,5 +1,5 @@
 from flask import request, Blueprint, Response, jsonify, current_app, render_template
-from skeleton_login_frontend import app, config
+from src import app, config
 import json
 
 general = Blueprint('general', __name__)
@@ -20,7 +20,7 @@ def showcase_temp():
 
 @app.errorhandler(400)
 def Internal_server_error(e):
-    return render_template('pages/500.html',logo=config.logo), 400
+    return render_template('pages/500.html'), 400
 
 @app.errorhandler(Exception)
 def unhandled_exception(e):
@@ -28,8 +28,8 @@ def unhandled_exception(e):
 
 @app.errorhandler(404)
 def page_not_found(e):
-   return render_template('pages/404.html',logo=config.logo), 404
+   return render_template('pages/404.html'), 404
 
 @app.errorhandler(500)
 def Internal_server_error(e):
-   return render_template('pages/500.html',logo=config.logo), 500
+   return render_template('pages/500.html'), 500

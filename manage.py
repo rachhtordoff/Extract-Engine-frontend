@@ -1,5 +1,5 @@
 from flask_script import Manager
-from skeleton_login_frontend import app
+from src import app
 import os
 
 manager = Manager(app)

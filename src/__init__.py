@@ -1,20 +1,15 @@
 from flask import Flask, g, request
 import uuid
 import requests
-
-from skeleton_login_frontend.dependencies.audit import Audit_logger
+from flask_jwt_extended import JWTManager
+from src import config
 
 app = Flask(__name__)
-
 app.config.from_pyfile("config.py")
-audit_logger = Audit_logger(app.config["AUDIT_API_URL"], app.config["APP_NAME"])
 
-if app.config["APM_ENABLED"]:
-	from elasticapm.contrib.flask import ElasticAPM
-	print("starting apm")
-	apm = ElasticAPM(app)
-else:
-	print("no apm to start")
+app.config['JWT_SECRET_KEY'] =  config.JWT_SECRET_KEY
+jwt = JWTManager(app)
+
 
 @app.before_request
 def before_request():
@@ -37,10 +32,10 @@ def after_request(response):
         response.headers['Strict-Transport-Security'] = "max-age=31536000"
     return response
 #these imports must be included after the app object has been created as it is imported in them
-from skeleton_login_frontend.blueprints import register_blueprints
-from skeleton_login_frontend.exceptions import register_exception_handlers
+from src.blueprints import register_blueprints
+from src.exceptions import register_exception_handlers
 
-from skeleton_login_frontend.extensions import register_extensions
+from src.extensions import register_extensions
 
 # Register any extensions we use into the app
 register_extensions(app)

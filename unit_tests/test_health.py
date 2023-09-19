@@ -1,4 +1,4 @@
-from skeleton_login_frontend import app
+from src import app
 import unittest
 
 

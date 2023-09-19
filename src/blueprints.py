@@ -1,5 +1,5 @@
-from skeleton_login_frontend import app
-from skeleton_login_frontend.views import general, login, extract, user
+from src import app
+from src.views import general, login, extract, user
 
 def register_blueprints(app):
     """
