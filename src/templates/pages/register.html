@@ -3,8 +3,16 @@
 {% block content %}
   <main>
     <div class="container">
+      {% if error %}
+{% if error == "email-taken" %}
+<div class="alert alert-error">
+  <strong>INFO!</strong> Email already taken
+</div>
+{% endif %}
 
-      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+{% endif %}
+
+<section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
@@ -56,7 +64,7 @@
                       <button class="btn btn-primary w-100" type="submit">Create Account</button>
                     </div>
                     <div class="col-12">
-                      <p class="small mb-0">Already have an account? <a href="pages-login.html">Log in</a></p>
+                      <p class="small mb-0">Already have an account? <a href="./login">Log in</a></p>
                     </div>
                   </form>
 

@@ -3,6 +3,29 @@
 {% block content %}
   <main>
     <div class="container">
+      {% if error %}
+{% if error == "invalid-code" %}
+<div class="alert alert-error">
+  <strong>INFO!</strong> Invalid code, please use the link in your email.
+</div>
+{% endif %}
+{% if error == "expired" %}
+<div class="alert alert-error">
+  <strong>INFO!</strong> Code expired, please request a new reset password link.
+</div>
+{% endif %}
+{% if error == "pass-not-set" %}
+<div class="alert alert-warning">
+  <strong>INFO!</strong> Password not set please try again.
+</div>
+{% endif %}
+{% if error == "reset-pass-not-sent" %}
+<div class="alert alert-warning">
+  <strong>INFO!</strong> Password not set please try again.
+</div>
+{% endif %}
+{% endif %}
+
 
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">

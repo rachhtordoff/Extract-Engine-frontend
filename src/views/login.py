@@ -21,33 +21,66 @@ login = Blueprint("login", __name__)
 def register():
     if request.method == 'POST':
 
-        url = current_app.config["users_api_url"] + "/register"
-
+        url = current_app.config["USER_API_URL"] + "/register"
         payload = {}
+        payload["fullname"] = request.form['name']
         payload["email"] = request.form['email'].lower()
         payload["password"] = request.form['password']
+
+        headers = {"Content-type": "application/json", "Accept": "text/plain"}
 
         response = g.requests.request(
             "POST", url, data=json.dumps(payload), headers=headers
         )
 
         json_data = json.loads(response.text)
-        return jsonify(json_data)
 
         if json_data.get('message') == 'email taken':
             return render_template(
-                "pages/login.html", error="email-taken"
+                "pages/register.html", error="email-taken"
             ) 
+
+
         else:
             return redirect(url_for('login'))
     return render_template('pages/register.html')
+
+
+@login.route("/reset_pass", methods=["POST"])
+def reset_pass():
+    url = current_app.config["EMAIL_API_URL"] + "/send_email"
+    headers = {"Content-type": "application/json", "Accept": "text/plain"}
+
+    payload = {}
+    payload["email"] = request.form["email"].lower()
+    payload["type"] = "reset_pass_email"
+
+    response = g.requests.request(
+        "POST", url, data=json.dumps(payload), headers=headers
+    )
+
+    json_data = json.loads(response.text)
+
+    print(response.status_code)
+
+    if response.status_code != 200:
+        # code u001 has been specified to be an incorrect email and password combination so we should check for this
+        if json_data["error_code"] == "u001":
+            return render_template(
+                "pages/new_pass.html",
+                error="reset-pass-not-sent"
+            )
+
+    return render_template(
+        "pages/login.html", error="reset-pass-sent", CDN_URL=config.CDN_URL
+    )
 
 
 @login.route("/login", methods=["POST"])
 def validate_login():
     post_data = request.form
 
-    url = current_app.config["users_api_url"] + "/login"
+    url = current_app.config["USER_API_URL"] + "/login"
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     payload = {}
     payload["email"] = post_data["email"].lower()
@@ -60,7 +93,7 @@ def validate_login():
 
     if response.status_code != 200:
         # code u001 has been specified to be an incorrect email and password combination so we should check for this
-        if json_data["error_code"] == "u001":
+        if json_data["message"] == "Invalid credentials":
             return render_template(
                 "pages/login.html",
                 error="error-password-username"
@@ -117,12 +150,12 @@ def set_new_pass(email, random):
         if get_random == " ":
             return render_template(
                 "pages/new_pass.html",
-                error="invalid-link",
+                error="invalid-code",
                 login_fe=config.CLIENT_LOGIN_FRONTEND_URL,
                 CDN_URL=config.CDN_URL,
             )
 
-        url = current_app.config["users_api_url"] + "/update_pass"
+        url = current_app.config["USER_API_URL"] + "/update_pass"
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
         payload = {}
         payload["password"] = request.form["password"]
@@ -136,21 +169,20 @@ def set_new_pass(email, random):
         json_data = json.loads(response.text)            
         if response.status_code != 200:
             # code u001 has been specified to be an incorrect email and password combination so we should check for this
-            if json_data["error_code"] == "u001":
+            if json_data["message"] == "u001":
                 return render_template(
                     "pages/new_pass.html",
                     error="pass-not-set"
                 )
-            if json_data["error_code"] == "u005":
+            if json_data["message"] == "u005":
                 return render_template(
                     "pages/new_pass.html",
                     error="expired"
                 )
-            if json_data['error_code'] == 'u004':
+            if json_data['message'] == 'u004':
                 return render_template('pages/new_pass.html', error="expired")
 
-        return render_template("pages/login.html", error="mew-pass-set")
-
+        return render_template("pages/login.html", error="new-pass-set")
 
 @login.route('/protected')
 def protected():
