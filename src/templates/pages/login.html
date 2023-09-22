@@ -4,13 +4,15 @@
   <main>
     <div class="container">
 {% if error %}
+<br>
+
 {% if error == "error-password-username" %}
-<div class="alert alert-error">
+<div class="alert alert-danger">
   <strong>INFO!</strong> Invalid email or password
 </div>
 {% endif %}
 {% if error == "new-pass-set" %}
-<div class="alert alert-warning">
+<div class="alert alert-info">
   <strong>INFO!</strong> Your password has been set, you can now login.
 </div>
 {% endif %}
@@ -80,7 +82,7 @@
                       <p class="small mb-0">Don't have account? <a href="./register">Create an account</a></p>
                     </div>
                     <div class="col-12">
-                      <p class="small mb-0">Forgot your password? <a href="./reset">Reset</a></p>
+                      <p class="small mb-0"> <a href="./reset_pass">Reset password</a></p>
                     </div>
                   </form>
 

@@ -14,6 +14,8 @@ from src.exceptions import ApplicationError
 from src import config
 from urllib.parse import urlparse
 from urllib.parse import urljoin
+import random
+import string
 
 login = Blueprint("login", __name__)
 
@@ -46,34 +48,61 @@ def register():
     return render_template('pages/register.html')
 
 
-@login.route("/reset_pass", methods=["POST"])
+@login.route("/reset_pass", methods=["GET", 'POST'])
 def reset_pass():
-    url = current_app.config["EMAIL_API_URL"] + "/send_email"
-    headers = {"Content-type": "application/json", "Accept": "text/plain"}
+    if request.method == 'GET':
+        return render_template(
+            "pages/reset_pass.html"
+        )
+    if request.method == 'POST':
 
-    payload = {}
-    payload["email"] = request.form["email"].lower()
-    payload["type"] = "reset_pass_email"
+        get_code = generate_random_string()
 
-    response = g.requests.request(
-        "POST", url, data=json.dumps(payload), headers=headers
-    )
+        url = current_app.config["EMAIL_API_URL"] + "/send_email"
+        headers = {"Content-type": "application/json", "Accept": "text/plain"}
+        email=request.form['email'].lower()
+        payload = {}
+        payload["email"] = email
+        payload["company_name"] = "Extract Engine"
+        payload["type"] = "reset_pass_email"
+        payload['template'] = 'reset_pass'
+        payload['title'] = 'Reset your password'
+        payload['link'] = f'{current_app.config["LOGIN_URL"]}/new_pass/{email}/{get_code}'
 
-    json_data = json.loads(response.text)
+        response = g.requests.request(
+            "POST", url, data=json.dumps(payload), headers=headers
+        )
 
-    print(response.status_code)
+        json_data = json.loads(response.text)
 
-    if response.status_code != 200:
-        # code u001 has been specified to be an incorrect email and password combination so we should check for this
-        if json_data["error_code"] == "u001":
-            return render_template(
-                "pages/new_pass.html",
-                error="reset-pass-not-sent"
-            )
+        print(response.status_code)
 
-    return render_template(
-        "pages/login.html", error="reset-pass-sent", CDN_URL=config.CDN_URL
-    )
+        if response.status_code != 200:
+            # code u001 has been specified to be an incorrect email and password combination so we should check for this
+            if json_data["error_code"] == "u001":
+                return render_template(
+                    "pages/new_pass.html",
+                    error="reset-pass-not-sent"
+                )
+        
+        url = current_app.config["USER_API_URL"] + "/update"
+
+        payload = {}
+        payload["email"] = email
+        payload["code"] = get_code
+
+        headers = {"Content-type": "application/json", "Accept": "text/plain"}
+
+        response = g.requests.request(
+            "PUT", url, data=json.dumps(payload), headers=headers
+        )
+
+        json_data = json.loads(response.text)
+
+
+        return render_template(
+            "pages/login.html", error="reset-pass-sent"
+        )
 
 
 @login.route("/login", methods=["POST"])
@@ -99,23 +128,20 @@ def validate_login():
                 error="error-password-username"
             )
 
-        session['username'] = json_data['username']
-        session['userToken'] = json_data['userToken']
-        session['refreshToken'] = json_data['refreshToken']
-        session['id'] = json_data['id']
-            
-        if "keep_me_logged_in" in post_data:
-            if post_data["keep_me_logged_in"] == "true":
-                session["keep_me_logged_in"] = "logged_in"
-                session.permanent = True
+    session['email'] = json_data['email']
+    session['access_token'] = json_data['access_token']
+    session['refresh_token'] = json_data['refresh_token']
+    session['user_id'] = json_data['user_id']
+        
+    if "keep_me_logged_in" in post_data:
+        if post_data["keep_me_logged_in"] == "true":
+            session["keep_me_logged_in"] = "logged_in"
+            session.permanent = True
 
-        session["cookie_policy"] = "yes"
-        session["error"] = ""
-        return redirect('./dashboard')
-    
-    return render_template(
-        "pages/login.html", error="error-password-username"
-    )
+    session["cookie_policy"] = "yes"
+    session["error"] = ""
+    return redirect('./extract')
+
 
 @login.route('/')
 @login.route("/login")
@@ -127,14 +153,14 @@ def display_login_page():
                 return render_template(
                     "pages/login.html", error="jwt-not-in-session"
                 )
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('extract'))
 
     return render_template(
         "pages/login.html"
     )
 
 
-@login.route("/login/new_pass/<email>/<random>", methods=["GET", "POST"])
+@login.route("/new_pass/<email>/<random>", methods=["GET", "POST"])
 def set_new_pass(email, random):
     get_email = email.lower()
     get_random = random
@@ -142,17 +168,13 @@ def set_new_pass(email, random):
         return render_template(
             "pages/new_pass.html",
             email=get_email,
-            random=get_random,
-            login_fe=config.COMPANY_LOGIN_FRONTEND_URL,
-            CDN_URL=config.CDN_URL,
-        )
+            random=get_random
+            )
     if request.method == "POST":
         if get_random == " ":
             return render_template(
                 "pages/new_pass.html",
-                error="invalid-code",
-                login_fe=config.CLIENT_LOGIN_FRONTEND_URL,
-                CDN_URL=config.CDN_URL,
+                error="invalid-code"
             )
 
         url = current_app.config["USER_API_URL"] + "/update_pass"
@@ -163,26 +185,30 @@ def set_new_pass(email, random):
         payload["code"] = get_random
 
         response = g.requests.request(
-            "POST", url, data=json.dumps(payload), headers=headers
+            "PUT", url, data=json.dumps(payload), headers=headers
         )
 
         json_data = json.loads(response.text)            
         if response.status_code != 200:
             # code u001 has been specified to be an incorrect email and password combination so we should check for this
-            if json_data["message"] == "u001":
+            if json_data["message"] == "Invalid code" or json_data["message"] == "Code not sent":
                 return render_template(
                     "pages/new_pass.html",
-                    error="pass-not-set"
+                    error="invalid-code"
                 )
-            if json_data["message"] == "u005":
+            elif json_data["message"] == "Code expired":
                 return render_template(
                     "pages/new_pass.html",
                     error="expired"
                 )
-            if json_data['message'] == 'u004':
-                return render_template('pages/new_pass.html', error="expired")
+            else:
+                return render_template(
+                    "pages/new_pass.html",
+                    error="pass-not-set"
+                )
 
         return render_template("pages/login.html", error="new-pass-set")
+    
 
 @login.route('/protected')
 def protected():
@@ -190,3 +216,7 @@ def protected():
     if not token:
         return redirect(url_for('login'))
     return f'Hello, you are in a protected route! JWT: {token}'
+
+def generate_random_string(length=8):
+    characters = string.ascii_uppercase + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))

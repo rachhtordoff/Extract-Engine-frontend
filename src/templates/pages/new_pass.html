@@ -4,13 +4,14 @@
   <main>
     <div class="container">
       {% if error %}
+      <br>
 {% if error == "invalid-code" %}
-<div class="alert alert-error">
+<div class="alert alert-danger">
   <strong>INFO!</strong> Invalid code, please use the link in your email.
 </div>
 {% endif %}
 {% if error == "expired" %}
-<div class="alert alert-error">
+<div class="alert alert-danger">
   <strong>INFO!</strong> Code expired, please request a new reset password link.
 </div>
 {% endif %}
@@ -47,7 +48,7 @@
                     <h5 class="card-title text-center pb-0 fs-4">Set your New Password!</h5>
                   </div>
 
-                  <form class="row g-3 needs-validation" novalidate action="./login/new_pass/{{email}}/{{random}}" id="new-pass" method="POST">
+                  <form class="row g-3 needs-validation" novalidate action="./new_pass/{{email}}/{{random}}" id="new-pass" method="POST">
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Password</label>
                       <input type="password" name="password" class="form-control" id="yourPassword" required>

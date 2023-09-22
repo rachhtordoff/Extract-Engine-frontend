@@ -17,4 +17,6 @@ extract = Blueprint("extract", __name__)
 
 @extract.route("/extract")
 def extract_data():
-    return ''
+    return render_template(
+        "pages/dashboard-home.html"
+    )

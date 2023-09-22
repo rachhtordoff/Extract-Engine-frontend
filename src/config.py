@@ -16,6 +16,8 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 FLASK_LOG_LEVEL = os.environ["FLASK_LOG_LEVEL"]
 USER_API_URL = os.environ["user_api_url"]
 OPENAPI_API = os.environ["openapi_api_url"]
+EMAIL_API_URL = os.environ["email_api_url"]
+LOGIN_URL = os.environ["LOGIN_URL"]
 
 LOGCONFIG = {
     "version": 1,
