@@ -209,14 +209,6 @@ def set_new_pass(email, random):
 
         return render_template("pages/login.html", error="new-pass-set")
     
-
-@login.route('/protected')
-def protected():
-    token = session.get('jwt')
-    if not token:
-        return redirect(url_for('login'))
-    return f'Hello, you are in a protected route! JWT: {token}'
-
 def generate_random_string(length=8):
     characters = string.ascii_uppercase + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
