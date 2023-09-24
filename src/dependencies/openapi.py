@@ -5,8 +5,8 @@ from flask import (
 )
 import json
 
-def extract_data(data):
-    url = current_app.config["OPENAPI_API"] + "/chatgpt_call"
+def extract_data_from_bank_statement(data):
+    url = current_app.config["OPENAPI_API"] + "/extract_data_bank_statement"
 
     headers = {
         "Content-type": "application/json",
