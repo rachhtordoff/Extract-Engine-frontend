@@ -10,45 +10,28 @@ from flask import (
 )
 import requests
 import json
-from urllib.parse import urlparse
-from urllib.parse import urljoin
-from flask_jwt_extended import JWTManager, decode_token
-from flask_jwt_extended.exceptions import JWTDecodeError, NoAuthorizationError, InvalidHeaderError, WrongTokenError, RevokedTokenError, FreshTokenRequired
-
+from src.utilities import jwt_util
+from src.dependencies import openapi
 
 extract = Blueprint("extract", __name__)
 
 @extract.route("/extract")
+@jwt_util.check_jwt
 def extract_data():
     
-    url = current_app.config["OPENAPI_API"] + "/chatgpt_call"
-
-    headers = {
-        "Content-type": "application/json",
-        "Accept": "text/plain",
-        "Authorization": f"Bearer {session.get('access_token')}"
-    }
-
-    payload = {}
-
-    response = g.requests.request(
-        "POST", url, data=json.dumps(payload), headers=headers
-    )
-
-    json_data = json.loads(response.text)
-
+    openapi.extract_data({})
 
     return render_template(
         "pages/dashboard-home.html"
     )
 
-def check_jwt():
-    token = session.get('access_token', None)
+@extract.route("/extract_pdf", methods=['POST'])
+@jwt_util.check_jwt
+def extract_pdf():
+    
+    post_data = request.form
+    openapi.extract_data(post_data)
 
-    if not token:
-        return redirect(url_for('login'))
-
-    try:
-        decode_token(token)
-    except (NoAuthorizationError, JWTDecodeError, InvalidHeaderError, WrongTokenError, RevokedTokenError, FreshTokenRequired) as e:
-        return redirect(url_for('login'))
+    return render_template(
+        "pages/dashboard-home.html"
+    )

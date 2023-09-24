@@ -44,7 +44,7 @@ def register():
 
 
         else:
-            return redirect(url_for('login'))
+            return redirect('./login')
     return render_template('pages/register.html')
 
 
@@ -119,7 +119,6 @@ def validate_login():
     )
 
     json_data = json.loads(response.text)
-
     if response.status_code != 200:
         # code u001 has been specified to be an incorrect email and password combination so we should check for this
         if json_data["message"] == "Invalid credentials":
@@ -127,7 +126,6 @@ def validate_login():
                 "pages/login.html",
                 error="error-password-username"
             )
-
     session['email'] = json_data['email']
     session['access_token'] = json_data['access_token']
     session['refresh_token'] = json_data['refresh_token']
@@ -153,7 +151,7 @@ def display_login_page():
                 return render_template(
                     "pages/login.html", error="jwt-not-in-session"
                 )
-            return redirect(url_for('extract'))
+            return redirect('./extract')
 
     return render_template(
         "pages/login.html"

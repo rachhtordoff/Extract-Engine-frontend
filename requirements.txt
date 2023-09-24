@@ -1,12 +1,11 @@
 dnspython==1.16.0
 elastic-apm==4.2.2
 eventlet==0.24.1
-Flask==0.11.1
+Flask==2.2.2
 Flask-LogConfig==0.4.2
 Flask-Script==2.0.5
 greenlet==0.4.13
-gunicorn==19.9.0
-itsdangerous==0.24
+gunicorn==20.1.0
 Jinja2==3.0.0 
 logconfig==0.4.0
 logutils==0.3.5
@@ -18,6 +17,5 @@ PyYAML==3.13
 requests==2.10.0
 six==1.13.0
 urllib3==1.25.10
-Werkzeug==0.14.1
 Flask-JWT-Extended
 PyJWT
