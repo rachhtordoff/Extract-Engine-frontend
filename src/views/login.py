@@ -147,7 +147,7 @@ def display_login_page():
     session["next"] = request.args.get("next", "/")
     if session.get("keep_me_logged_in"):
         if session["keep_me_logged_in"] == "logged_in":
-            if not 'userToken' in session:
+            if not 'access_token' in session:
                 return render_template(
                     "pages/login.html", error="jwt-not-in-session"
                 )

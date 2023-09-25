@@ -18,11 +18,8 @@ extract = Blueprint("extract", __name__)
 @extract.route("/extract")
 @jwt_util.check_jwt
 def extract_data():
-    
-    openapi.extract_data({})
-
     return render_template(
-        "pages/dashboard-home.html"
+        "pages/extract-home.html"
     )
 
 @extract.route("/extract_pdf", methods=['POST'])
@@ -30,8 +27,8 @@ def extract_data():
 def extract_pdf():
     
     post_data = request.form
-    openapi.extract_data(post_data)
+    openapi.extract_data_from_bank_statement(post_data)
 
     return render_template(
-        "pages/dashboard-home.html"
+        "pages/extract-home.html"
     )
