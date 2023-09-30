@@ -144,7 +144,7 @@ def validate_login():
 @login.route('/')
 @login.route("/login")
 def display_login_page():
-    session["next"] = request.args.get("next", "/")
+    # session["next"] = request.args.get("next", "/")
     if session.get("keep_me_logged_in"):
         if session["keep_me_logged_in"] == "logged_in":
             if not 'access_token' in session:
@@ -156,6 +156,11 @@ def display_login_page():
     return render_template(
         "pages/login.html"
     )
+
+@login.route("/logout")
+def logout():
+    session.clear()
+    return redirect('./login')
 
 
 @login.route("/new_pass/<email>/<random>", methods=["GET", "POST"])

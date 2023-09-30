@@ -26,13 +26,13 @@
           <i class="bi bi-grid"></i>
           <span>New extract</span>
         </a>
-      </li><!-- End Dashboard Nav -->
+      </li>
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="./previous_extracts">
           <i class="bi bi-menu-button-wide"></i><span>Previous Extracts</span></i>
         </a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="./logout">
           <i class="bi bi-grid"></i>
@@ -62,33 +62,46 @@
               <div class="card info-card sales-card">
 
                 <div class="card-body">
-                  <h5 class="card-title">Upload <span></span></h5>
+                  <h5 class="card-title">Upload <span>| PDF, Zip of PDFs or CSV of URLS only</span></h5>
+                <p>Extract data from a PDF or zipfile of PDFs, or webscrape & extract data from a CSV of URLs</p>
 
-
-              <!-- Vertical Form -->
-              <form class="row g-3">
-                <div class="col-12">
-                  <label for="inputNanme4" class="form-label">File</label>
-                  <input type="text" class="form-control" id="inputNanme4" name="upload_file">
-                </div>
+                <!-- Vertical Form -->
+                <form class="row g-3 needs-validation" id="document-upload-form" action="./document-upload" method="POST">
                   <div class="col-12">
-                    <select name="output_type" id="inputState" class="form-select">
+                  <label for="inputNanme4" class="form-label">File</label>
+                  <input type="file" class="form-control" id="inputNanme4" name="upload_file">
+                  <div class="invalid-feedback">
+                    Please add a file
+                  </div>
+                </div>
+
+                  <div class="col-12">
+                    <select name="output_type" id="inputState" class="form-select" required>
                       <option selected>Output Type</option>
-                      <option>...</option>
+                      <option>CSV</option>
                     </select>
+                    <div class="invalid-feedback">
+                      Please specify an output type
+                    </div>
                   </div>
                 
                 <div class="col-12">
-                  <label for="inputphrases4" class="form-label">Phrases to scrape</label><br>
-                  <button type="button" class="btn btn-outline-primary"  onclick="addInput()">Add phrase</button>
+                  <label for="inputphrases4" class="form-label">Phrases to extract</label><br>
+                  <p>Example:
+                    <ul>
+                      <li>name</li>
+                      <li>hair colour</li>
+                      <li>company name</li>
+                    </ul>
+                  </p>
+                  <button type="button" class="btn btn-outline-primary"  onclick="addInputfile()">Add phrase</button>
                     <div name="input_phrases" id="inputContainer"></div>
 
-                  
+                    <div class="invalid-feedback">
+                      Please add at least one phrase
+                    </div>
                 </div>
-                <div class="col-12">
-                  <label for="inputAddress" class="form-label">Address</label>
-                  <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-                </div>
+
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
@@ -113,27 +126,45 @@
               <div class="card info-card sales-card">
 
                 <div class="card-body">
-                  <h5 class="card-title">URL <span></span></h5>
+                  <h5 class="card-title">URL<span>| Single or list </span></h5>
 
 
               <!-- Vertical Form -->
-              <form class="row g-3">
+              <form class="row g-3 needs-validation" id="document-url-form" action="./url-list" method="POST">
                 <div class="col-12">
-                  <label for="inputNanme4" class="form-label">URL</label>
-                  <input type="text" class="form-control" id="inputNanme4">
+                  <label for="inputNanme5" class="form-label">URL(s)</label>
+                  <textarea class="form-control" name="urls" id="inputNanme5" rows="5" placeholder="Paste one URL per line"></textarea>
+                  <div class="invalid-feedback">
+                    Please add at least one url
+                  </div>
+                </div>
+
+            
+                <div class="col-12">
+                  <select name="output_typeurl" id="inputState2" class="form-select">
+                    <option selected>Output Type</option>
+                    <option>CSV</option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please specify an output type
+                  </div>
                 </div>
                 <div class="col-12">
-                  <label for="inputEmail4" class="form-label">Output Type</label>
-                  <input type="email" class="form-control" id="inputEmail4">
+                  <label for="inputphrases42" class="form-label">Phrases to extract</label><br>
+                  <p>Example:
+                    <ul>
+                      <li>name</li>
+                      <li>hair colour</li>
+                      <li>company name</li>
+                    </ul>
+                  </p>
+                  <button type="button" class="btn btn-outline-primary"  onclick="addInputurls()">Add phrase</button>
+                    <div name="input_phrases" id="inputContainer22"></div>
+                    <div class="invalid-feedback">
+                      Please add at least one phrase
+                    </div>
                 </div>
-                <div class="col-12">
-                  <label for="inputPassword4" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="inputPassword4">
-                </div>
-                <div class="col-12">
-                  <label for="inputAddress" class="form-label">Address</label>
-                  <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-                </div>
+
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
@@ -154,9 +185,116 @@
   </main><!-- End #main -->
 
 <script>
-  function addInput() {
-    // Create a wrapper div
 
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector("#document-upload-form");
+    
+    form.addEventListener("submit", function(event) {
+        let isValid = true;
+
+        // Validate File input
+        const fileInput = document.getElementById('inputNanme4');
+        if (!fileInput.value) {
+            fileInput.classList.add("is-invalid");
+            isValid = false;
+        } else {
+            fileInput.classList.remove("is-invalid");
+        }
+
+        // Validate output type
+        const outputTypeSelect = document.querySelector("[name='output_type']");
+        if (outputTypeSelect.value === "Output Type") {
+            outputTypeSelect.classList.add("is-invalid");
+            isValid = false;
+        } else {
+            outputTypeSelect.classList.remove("is-invalid");
+        }
+
+        // Validate phrases
+        const inputContainer = document.getElementById('inputContainer');
+        if (!inputContainer.hasChildNodes()) {
+            inputContainer.nextElementSibling.classList.remove('d-none');
+            isValid = false;
+        } else {
+            inputContainer.nextElementSibling.classList.add('d-none');
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
+    window.addInputfile = function() {
+        const inputContainer = document.getElementById('inputContainer');
+
+        // Create a new input for the phrase
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.className = 'form-control mt-2';  // Bootstrap styling
+        newInput.name = 'phrases[]';
+
+        inputContainer.appendChild(newInput);
+    }
+
+
+    const form2 = document.querySelector("#document-url-form");
+    
+    form2.addEventListener("submit", function(event) {
+        let isValid = true;
+
+        // Validate File input
+        const fileInput = document.getElementById('inputNanme5');
+        if (!fileInput.value) {
+            fileInput.classList.add("is-invalid");
+            isValid = false;
+        } else {
+            fileInput.classList.remove("is-invalid");
+        }
+
+        // Validate output type
+        const outputTypeSelect = document.querySelector("[name='output_typeurl']");
+        if (outputTypeSelect.value === "Output Type") {
+            outputTypeSelect.classList.add("is-invalid");
+            isValid = false;
+        } else {
+            outputTypeSelect.classList.remove("is-invalid");
+        }
+
+        // Validate phrases
+        const inputContainer = document.getElementById('inputContainer22');
+        if (!inputContainer.hasChildNodes()) {
+            inputContainer.nextElementSibling.classList.remove('d-none');
+            isValid = false;
+        } else {
+            inputContainer.nextElementSibling.classList.add('d-none');
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
+    window.addInputurls = function() {
+        const inputContainer = document.getElementById('inputContainer22');
+
+        // Create a new input for the phrase
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.className = 'form-control mt-2';  // Bootstrap styling
+        newInput.name = 'phrases[]';
+
+        inputContainer.appendChild(newInput);
+    }
+
+});
+
+ let inputCounter = 0;
+
+
+function addInputfile() {
+    // Create a wrapper div
     const inputWrapper = document.createElement('div');
     inputWrapper.className = 'input-wrapper';
 
@@ -172,11 +310,16 @@
     prependSpan.onclick = function() {
         inputWrapper.remove();
     };
+
     // Create the input element
     const inputElement = document.createElement('input');
     inputElement.type = 'text';
     inputElement.className = 'form-control';  // Assuming Bootstrap styles
     inputElement.setAttribute('aria-describedby', 'inputGroupPrepend');
+    
+    // Name the input such that it's treated as an array on the server-side.
+    // Additionally, append a unique identifier (here, inputCounter) to differentiate between inputs.
+    inputElement.name = 'inputList[' + inputCounter + ']';
 
     // Append the elements in order
     inputGroup.appendChild(prependSpan);
@@ -186,8 +329,53 @@
     // Append the wrapper to the inputContainer
     const inputContainer = document.getElementById('inputContainer');
     inputContainer.appendChild(inputWrapper);
-}
 
+    // Increment the counter for the next input
+    inputCounter++;
+}
+let inputCounter2 = 0;
+
+
+function addInputurls() {
+    // Create a wrapper div
+    const inputWrapper = document.createElement('div');
+    inputWrapper.className = 'input-wrapper';
+
+    // Create the input group div
+    const inputGroup = document.createElement('div');
+    inputGroup.className = 'input-group has-validation';
+
+    // Create the prepend span
+    const prependSpan = document.createElement('span');
+    prependSpan.className = 'input-group-text remove-btn';
+    prependSpan.id = 'inputGroupPrepend';
+    prependSpan.textContent = 'X';
+    prependSpan.onclick = function() {
+        inputWrapper.remove();
+    };
+
+    // Create the input element
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    inputElement.className = 'form-control';  // Assuming Bootstrap styles
+    inputElement.setAttribute('aria-describedby', 'inputGroupPrepend');
+    
+    // Name the input such that it's treated as an array on the server-side.
+    // Additionally, append a unique identifier (here, inputCounter) to differentiate between inputs.
+    inputElement.name = 'inputList[' + inputCounter2 + ']';
+
+    // Append the elements in order
+    inputGroup.appendChild(prependSpan);
+    inputGroup.appendChild(inputElement);
+    inputWrapper.appendChild(inputGroup);
+
+    // Append the wrapper to the inputContainer
+    const inputContainer = document.getElementById('inputContainer2');
+    inputContainer.appendChild(inputWrapper);
+
+    // Increment the counter for the next input
+    inputCounter2++;
+}
 </script>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   {% endblock %}

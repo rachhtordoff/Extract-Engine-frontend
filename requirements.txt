@@ -19,3 +19,4 @@ six==1.13.0
 urllib3==1.25.10
 Flask-JWT-Extended
 PyJWT
+beautifulsoup4
