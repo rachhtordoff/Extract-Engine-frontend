@@ -7,6 +7,7 @@ Extract Engine Frontend is the frontend for the Extract Engine service
 - Extract Engine Frontend: Flask based service.
 - Extract Engine Users API: Flask application managing users and login
 - Extract Engine Open ai API: Flask application managing open ai calls
+- SQS service: SQS queing system to handle webscraping requests
 
 ## Requirements
 - Docker
