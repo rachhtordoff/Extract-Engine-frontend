@@ -14,10 +14,6 @@ def check_status():
     }),  mimetype='application/json', status=200)
 
 
-@general.route("/showcase")
-def showcase_temp():
-    return "this is a test route for the plymouth university showcase"
-
 @app.errorhandler(400)
 def Internal_server_error(e):
     return render_template('pages/500.html'), 400

@@ -8,6 +8,9 @@ COPY / /opt/
 RUN pip3 install -q -r /opt/requirements.txt && \
     pip3 install -q -r /opt/requirements_test.txt
 
+# Optional: Set flake8 configuration
+COPY .flake8 /app/
+
 EXPOSE 8000
 
 WORKDIR /opt

@@ -20,3 +20,5 @@ urllib3==1.25.10
 Flask-JWT-Extended
 PyJWT
 beautifulsoup4
+Flask-Testing
+flake8
