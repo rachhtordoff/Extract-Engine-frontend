@@ -105,53 +105,55 @@ def reset_pass():
         )
 
 
-@login.route("/login", methods=["POST"])
-def validate_login():
-    post_data = request.form
 
-    url = current_app.config["USER_API_URL"] + "/login"
-    headers = {"Content-type": "application/json", "Accept": "text/plain"}
-    payload = {}
-    payload["email"] = post_data["email"].lower()
-    payload["password"] = post_data["password"]
-    response = g.requests.request(
-        "POST", url, data=json.dumps(payload), headers=headers
-    )
-
-    json_data = json.loads(response.text)
-    if response.status_code != 200:
-        # code u001 has been specified to be an incorrect email and password combination so we should check for this
-        if json_data["message"] == "Invalid credentials":
-            return render_template(
-                "pages/login.html",
-                error="error-password-username"
-            )
-    session['email'] = json_data['email']
-    session['access_token'] = json_data['access_token']
-    session['refresh_token'] = json_data['refresh_token']
-    session['user_id'] = json_data['user_id']
-        
-    if "keep_me_logged_in" in post_data:
-        if post_data["keep_me_logged_in"] == "true":
-            session["keep_me_logged_in"] = "logged_in"
-            session.permanent = True
-
-    session["cookie_policy"] = "yes"
-    session["error"] = ""
-    return redirect('./extract')
-
-
-@login.route('/')
-@login.route("/login")
+@login.route('/login', methods=['GET', 'POST'])
 def display_login_page():
     # session["next"] = request.args.get("next", "/")
-    if session.get("keep_me_logged_in"):
-        if session["keep_me_logged_in"] == "logged_in":
-            if not 'access_token' in session:
+
+
+    if request.method == 'POST':
+
+        post_data = request.form
+
+        url = current_app.config["USER_API_URL"] + "/login"
+        headers = {"Content-type": "application/json", "Accept": "text/plain"}
+        payload = {}
+        payload["email"] = post_data["email"].lower()
+        payload["password"] = post_data["password"]
+        response = g.requests.request(
+            "POST", url, data=json.dumps(payload), headers=headers
+        )
+
+        json_data = json.loads(response.text)
+        if response.status_code != 200:
+            # code u001 has been specified to be an incorrect email and password combination so we should check for this
+            if json_data["message"] == "Invalid credentials":
                 return render_template(
-                    "pages/login.html", error="jwt-not-in-session"
+                    "pages/login.html",
+                    error="error-password-username"
                 )
-            return redirect('./extract')
+        session['email'] = json_data['email']
+        session['access_token'] = json_data['access_token']
+        session['refresh_token'] = json_data['refresh_token']
+        session['user_id'] = json_data['user_id']
+            
+        if "keep_me_logged_in" in post_data:
+            if post_data["keep_me_logged_in"] == "true":
+                session["keep_me_logged_in"] = "logged_in"
+                session.permanent = True
+
+        session["cookie_policy"] = "yes"
+        session["error"] = ""
+        return redirect('./extract')
+
+    else:
+        if session.get("keep_me_logged_in"):
+            if session["keep_me_logged_in"] == "logged_in":
+                if not 'access_token' in session:
+                    return render_template(
+                        "pages/login.html", error="jwt-not-in-session"
+                    )
+                return redirect('./extract')
 
     return render_template(
         "pages/login.html"
