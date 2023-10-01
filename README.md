@@ -4,9 +4,9 @@ Extract Engine Frontend is the frontend for the Extract Engine service
 
 ## Architecture
 
-Extract Engine Frontend: Flask based service.
-Extract Engine Users API: Flask application managing users and login
-Extract Engine Open ai API: Flask application managing open ai calls
+- Extract Engine Frontend: Flask based service.
+- Extract Engine Users API: Flask application managing users and login
+- Extract Engine Open ai API: Flask application managing open ai calls
 
 ## Requirements
 - Docker
