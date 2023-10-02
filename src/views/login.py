@@ -31,7 +31,7 @@ def register():
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
 
-        response = g.requests.request(
+        response = requests.request(
             "POST", url, data=json.dumps(payload), headers=headers
         )
 
@@ -69,7 +69,7 @@ def reset_pass():
         payload['title'] = 'Reset your password'
         payload['link'] = f'{current_app.config["LOGIN_URL"]}/new_pass/{email}/{get_code}'
 
-        response = g.requests.request(
+        response = requests.request(
             "POST", url, data=json.dumps(payload), headers=headers
         )
 
@@ -93,7 +93,7 @@ def reset_pass():
 
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
 
-        response = g.requests.request(
+        response = requests.request(
             "PUT", url, data=json.dumps(payload), headers=headers
         )
 
@@ -120,7 +120,7 @@ def display_login_page():
         payload = {}
         payload["email"] = post_data["email"].lower()
         payload["password"] = post_data["password"]
-        response = g.requests.request(
+        response = requests.request(
             "POST", url, data=json.dumps(payload), headers=headers
         )
 
@@ -189,7 +189,7 @@ def set_new_pass(email, random):
         payload["email"] = get_email.lower()
         payload["code"] = get_random
 
-        response = g.requests.request(
+        response = requests.request(
             "PUT", url, data=json.dumps(payload), headers=headers
         )
 
