@@ -53,7 +53,6 @@ def url_list():
     }
     
     result = openapi.extract_data_from_webscraped_urls(new_dict)
-    return jsonify(result)
     return render_template(
         "pages/extract-home.html"
     )
