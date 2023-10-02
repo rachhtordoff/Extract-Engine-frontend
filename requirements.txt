@@ -22,3 +22,4 @@ PyJWT
 beautifulsoup4
 Flask-Testing
 flake8
+blinker
