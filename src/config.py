@@ -18,33 +18,4 @@ USER_API_URL = os.environ["user_api_url"]
 OPENAPI_API = os.environ["openapi_api_url"]
 EMAIL_API_URL = os.environ["email_api_url"]
 LOGIN_URL = os.environ["LOGIN_URL"]
-
-LOGCONFIG = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "simple": {"()": "src.extensions.JsonFormatter"},
-        "audit": {"()": "src.extensions.JsonAuditFormatter"},
-    },
-    "filters": {
-        "contextual": {"()": "src.extensions.ContextualFilter"}
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
-            "filters": ["contextual"],
-            "stream": "ext://sys.stdout",
-        },
-        "audit_console": {
-            "class": "logging.StreamHandler",
-            "formatter": "audit",
-            "filters": ["contextual"],
-            "stream": "ext://sys.stdout",
-        },
-    },
-    "loggers": {
-        "application": {"handlers": ["console"], "level": FLASK_LOG_LEVEL},
-        "audit": {"handlers": ["audit_console"], "level": "INFO"},
-    },
-}
+APP_NAME = os.environ["APP_NAME"]
