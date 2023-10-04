@@ -7,7 +7,7 @@ from src import config
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 
-app.config['JWT_SECRET_KEY'] =  config.JWT_SECRET_KEY
+app.config['JWT_SECRET_KEY'] = config.JWT_SECRET_KEY
 jwt = JWTManager(app)
 
 
@@ -31,11 +31,11 @@ def after_request(response):
     if app.config['ALLOW_HTTPS_TRAFFIC_ONLY']:
         response.headers['Strict-Transport-Security'] = "max-age=31536000"
     return response
-#these imports must be included after the app object has been created as it is imported in them
-from src.blueprints import register_blueprints
-from src.exceptions import register_exception_handlers
 
-from src.extensions import register_extensions
+# these imports must be included after the app object has been created as it is imported in them
+from src.blueprints import register_blueprints # noqa
+from src.exceptions import register_exception_handlers # noqa
+from src.extensions import register_extensions # noqa
 
 # Register any extensions we use into the app
 register_extensions(app)

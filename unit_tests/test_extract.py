@@ -1,14 +1,14 @@
 import unittest
-from flask import Flask, session, template_rendered
+from flask import template_rendered
 from src import app
 from src.utilities import jwt_util
-import json
 from contextlib import contextmanager
 
 
 @contextmanager
 def captured_templates(app):
     recorded = []
+
     def record(sender, template, context):
         recorded.append((template, context))
     template_rendered.connect(record, app)
@@ -17,10 +17,11 @@ def captured_templates(app):
     finally:
         template_rendered.disconnect(record, app)
 
+
 class ExtractTests(unittest.TestCase):
 
     def setUp(self):
-        self.app = app  
+        self.app = app
         self.ctx = self.app.app_context()
         self.ctx.push()
 
@@ -29,11 +30,10 @@ class ExtractTests(unittest.TestCase):
 
         self.test_jwt = jwt_util.generate_test_jwt()
 
-
     def test_extract_data_route(self):
         with self.app.test_client() as client:
             with client.session_transaction() as session:
-                session['access_token'] = self.test_jwt
+                session['access_token'] = self.test_jwt # noqa
 
             with captured_templates(self.app) as templates:
                 response = client.get('/extract', headers={'Authorization': f'Bearer {self.test_jwt}'})
@@ -43,11 +43,10 @@ class ExtractTests(unittest.TestCase):
                 rendered_template_names = [template[0].name for template in templates]
                 self.assertIn("pages/extract-home.html", rendered_template_names)
 
-
     def test_url_list_route(self):
 
         with self.client.session_transaction() as session:
-            session['access_token'] = self.test_jwt
+            session['access_token'] = self.test_jwt # noqa
 
         data = {
             'phrases[]': ["test1", "test2"],
@@ -60,6 +59,7 @@ class ExtractTests(unittest.TestCase):
         response = self.client.get('/extract')
         self.assertEqual(response.status_code, 401)
         self.assertIn("/login", response.headers.get("Location"))
+
 
 if __name__ == "__main__":
     unittest.main()

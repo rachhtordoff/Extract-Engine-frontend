@@ -1,4 +1,4 @@
-from flask import Response, current_app, render_template
+from flask import current_app, render_template
 import json
 
 
@@ -24,16 +24,29 @@ class ApplicationError(Exception):
 
 def unhandled_exception(e):
     current_app.logger.error('Unhandled Exception: %s', repr(e))
-    return render_template('pages/500error.html', error=json.dumps({"error_message": "Unexpected error.", "error_code": "XXX"}), status=500)
+    return render_template(
+        'pages/500error.html',
+        error=json.dumps({
+            "error_message": "Unexpected error.",
+            "error_code": " XXX"
+        }),
+        status=500
+    )
 
 
 def application_error(e):
     current_app.logger.error('error_message: %s', repr(e))
-    return render_template('pages/apperror.html', error=json.dumps({"error_message": e.message, "error_code": e.code}), status=e.http_code)
+    return render_template(
+        'pages/apperror.html',
+        error=json.dumps({
+            "error_message": e.message,
+            "error_code": e.code
+        }),
+        status=e.http_code
+    )
 
 
 def register_exception_handlers(app):
     app.register_error_handler(ApplicationError, application_error)
     app.register_error_handler(Exception, unhandled_exception)
-
     app.logger.info("Exception handlers registered")

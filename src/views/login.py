@@ -4,20 +4,15 @@ from flask import (
     render_template,
     request,
     current_app,
-    jsonify,
-    session,
-    g,
+    session
 )
 import requests
 import json
-from src.exceptions import ApplicationError
-from src import config
-from urllib.parse import urlparse
-from urllib.parse import urljoin
 import random
 import string
 
 login = Blueprint("login", __name__)
+
 
 @login.route('/register', methods=['GET', 'POST'])
 def register():
@@ -40,8 +35,7 @@ def register():
         if json_data.get('message') == 'email taken':
             return render_template(
                 "pages/register.html", error="email-taken"
-            ) 
-
+            )
 
         else:
             return redirect('./login')
@@ -60,7 +54,7 @@ def reset_pass():
 
         url = current_app.config["EMAIL_API_URL"] + "/send_email"
         headers = {"Content-type": "application/json", "Accept": "text/plain"}
-        email=request.form['email'].lower()
+        email = request.form['email'].lower()
         payload = {}
         payload["email"] = email
         payload["company_name"] = "Extract Engine"
@@ -75,16 +69,15 @@ def reset_pass():
 
         json_data = json.loads(response.text)
 
-        print(response.status_code)
-
         if response.status_code != 200:
-            # code u001 has been specified to be an incorrect email and password combination so we should check for this
+            # code u001 has been specified to be an incorrect email and
+            # password combination so we should check for this
             if json_data["error_code"] == "u001":
                 return render_template(
                     "pages/new_pass.html",
                     error="reset-pass-not-sent"
                 )
-        
+
         url = current_app.config["USER_API_URL"] + "/update"
 
         payload = {}
@@ -99,17 +92,14 @@ def reset_pass():
 
         json_data = json.loads(response.text)
 
-
         return render_template(
             "pages/login.html", error="reset-pass-sent"
         )
 
 
-
 @login.route('/login', methods=['GET', 'POST'])
 def display_login_page():
     # session["next"] = request.args.get("next", "/")
-
 
     if request.method == 'POST':
 
@@ -126,7 +116,8 @@ def display_login_page():
 
         json_data = json.loads(response.text)
         if response.status_code != 200:
-            # code u001 has been specified to be an incorrect email and password combination so we should check for this
+            # code u001 has been specified to be an incorrect email and
+            # password combination so we should check for this
             if json_data["message"] == "Invalid credentials":
                 return render_template(
                     "pages/login.html",
@@ -136,7 +127,7 @@ def display_login_page():
         session['access_token'] = json_data['access_token']
         session['refresh_token'] = json_data['refresh_token']
         session['user_id'] = json_data['user_id']
-            
+
         if "keep_me_logged_in" in post_data:
             if post_data["keep_me_logged_in"] == "true":
                 session["keep_me_logged_in"] = "logged_in"
@@ -149,7 +140,7 @@ def display_login_page():
     else:
         if session.get("keep_me_logged_in"):
             if session["keep_me_logged_in"] == "logged_in":
-                if not 'access_token' in session:
+                if 'access_token' not in session:
                     return render_template(
                         "pages/login.html", error="jwt-not-in-session"
                     )
@@ -158,6 +149,7 @@ def display_login_page():
     return render_template(
         "pages/login.html"
     )
+
 
 @login.route("/logout")
 def logout():
@@ -193,9 +185,10 @@ def set_new_pass(email, random):
             "PUT", url, data=json.dumps(payload), headers=headers
         )
 
-        json_data = json.loads(response.text)            
+        json_data = json.loads(response.text)
         if response.status_code != 200:
-            # code u001 has been specified to be an incorrect email and password combination so we should check for this
+            # code u001 has been specified to be an incorrect email and
+            # password combination so we should check for this
             if json_data["message"] == "Invalid code" or json_data["message"] == "Code not sent":
                 return render_template(
                     "pages/new_pass.html",
@@ -213,7 +206,8 @@ def set_new_pass(email, random):
                 )
 
         return render_template("pages/login.html", error="new-pass-set")
-    
+
+
 def generate_random_string(length=8):
     characters = string.ascii_uppercase + string.digits
     return ''.join(random.choice(characters) for _ in range(length))

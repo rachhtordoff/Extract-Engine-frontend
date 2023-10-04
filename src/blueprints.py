@@ -1,5 +1,5 @@
-from src import app
 from src.views import general, login, extract, user
+
 
 def register_blueprints(app):
     """

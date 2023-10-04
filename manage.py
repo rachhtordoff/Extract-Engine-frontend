@@ -4,6 +4,7 @@ import os
 
 manager = Manager(app)
 
+
 @manager.command
 def runserver(port=9998):
     """Run the app using flask server"""
@@ -13,6 +14,7 @@ def runserver(port=9998):
     os.environ["COMMIT"] = "LOCAL"
 
     app.run(debug=True, port=int(port))
+
 
 if __name__ == "__main__":
     manager.run()

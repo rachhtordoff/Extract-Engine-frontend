@@ -1,5 +1,5 @@
-from flask import request, Blueprint, Response, jsonify, current_app, render_template
-from src import app, config
+from flask import request, Blueprint, Response, current_app, render_template
+from src import app
 import json
 
 general = Blueprint('general', __name__)
@@ -16,16 +16,14 @@ def check_status():
 
 @app.errorhandler(400)
 def Internal_server_error(e):
-    return render_template('pages/500.html'), 400
+    return render_template('pages/500.html'), 500
+
 
 @app.errorhandler(Exception)
 def unhandled_exception(e):
-   return render_template('pages/503.html'), 503
+    return render_template('pages/503.html'), 503
+
 
 @app.errorhandler(404)
 def page_not_found(e):
-   return render_template('pages/404.html'), 404
-
-@app.errorhandler(500)
-def Internal_server_error(e):
-   return render_template('pages/500.html'), 500
+    return render_template('pages/404.html'), 404
