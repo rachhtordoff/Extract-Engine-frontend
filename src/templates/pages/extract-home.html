@@ -2,14 +2,37 @@
 
 {% block content %}
 
+<style>
+/* Hide the sidebar initially */
+.sidebar {
+    left: -300px;
+    position: fixed;
+    transition: left 0.3s ease;
+    width: 300px;
+}
+
+/* Style to show the sidebar when it has the 'active' class */
+.sidebar.active {
+    left: 0;
+}
+
+@media (min-width: 1200px) {
+  .sidebar, .sidebar.active {
+    left: 0;
+  }
+}
+
+</style>
+
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <img src="assets/img/logo.png" alt="">
         <span class="d-none d-lg-block">Extract Engine</span>
       </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+
     </div><!-- End Logo -->
 
 
@@ -25,6 +48,13 @@
         <a class="nav-link " href="./extract">
           <i class="bi bi-grid"></i>
           <span>New extract</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="./documents">
+          <i class="bi bi-grid"></i>
+          <span>Documents</span>
         </a>
       </li>
 
@@ -185,6 +215,12 @@
   </main><!-- End #main -->
 
 <script>
+
+
+document.querySelector('.toggle-sidebar-btn').addEventListener('click', function() {
+  // Toggle 'active' class on the sidebar to show/hide it
+  document.getElementById('sidebar').classList.toggle('active');
+});
 
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.querySelector("#document-upload-form");
