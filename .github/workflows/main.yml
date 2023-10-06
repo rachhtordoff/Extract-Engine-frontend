@@ -22,9 +22,9 @@ jobs:
       run: |
         REPO_NAME="$(echo ${{ github.repository }} | cut -d'/' -f2)"
         docker build -t test .
-        docker tag test registry.jacobscodingstuff.com/optistack/${REPO_NAME}:${{ github.ref_name }}
+        docker tag test registry.jacobscodingstuff.com/extractengine/${REPO_NAME}:${{ github.ref_name }}
         echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u "${{ secrets.REGISTRY_USER }}" --password-stdin registry.jacobscodingstuff.com
-        docker push registry.jacobscodingstuff.com/optistack/${REPO_NAME}:${{ github.ref_name }}
+        docker push registry.jacobscodingstuff.com/extractengine/${REPO_NAME}:${{ github.ref_name }}
 
     - name: Install curl
       run: |
