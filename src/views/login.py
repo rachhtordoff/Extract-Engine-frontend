@@ -10,6 +10,7 @@ import requests
 import json
 import random
 import string
+from src.dependencies.users_api import UserApi
 
 login = Blueprint("login", __name__)
 
@@ -17,20 +18,12 @@ login = Blueprint("login", __name__)
 @login.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-
-        url = current_app.config["USER_API_URL"] + "/register"
         payload = {}
         payload["fullname"] = request.form['name']
         payload["email"] = request.form['email'].lower()
         payload["password"] = request.form['password']
 
-        headers = {"Content-type": "application/json", "Accept": "text/plain"}
-
-        response = requests.request(
-            "POST", url, data=json.dumps(payload), headers=headers
-        )
-
-        json_data = json.loads(response.text)
+        json_data = UserApi().register_user(payload)
 
         if json_data.get('message') == 'email taken':
             return render_template(
@@ -38,6 +31,8 @@ def register():
             )
 
         else:
+            UsersApi().create_folder(json_data['id'])
+
             return redirect('./login')
     return render_template('pages/register.html')
 
@@ -100,33 +95,28 @@ def reset_pass():
 @login.route('/login', methods=['GET', 'POST'])
 def display_login_page():
     # session["next"] = request.args.get("next", "/")
-
+    session['info-message'] = ''
     if request.method == 'POST':
 
         post_data = request.form
 
-        url = current_app.config["USER_API_URL"] + "/login"
-        headers = {"Content-type": "application/json", "Accept": "text/plain"}
         payload = {}
         payload["email"] = post_data["email"].lower()
         payload["password"] = post_data["password"]
-        response = requests.request(
-            "POST", url, data=json.dumps(payload), headers=headers
-        )
 
-        json_data = json.loads(response.text)
-        if response.status_code != 200:
-            # code u001 has been specified to be an incorrect email and
-            # password combination so we should check for this
-            if json_data["message"] == "Invalid credentials":
-                return render_template(
-                    "pages/login.html",
-                    error="error-password-username"
-                )
+        json_data = UserApi().login(payload)
+
+        # code u001 has been specified to be an incorrect email and
+        # password combination so we should check for this
+        if json_data["message"] == "Invalid credentials":
+            return render_template(
+                "pages/login.html",
+                error="error-password-username"
+            )
         session['email'] = json_data['email']
         session['access_token'] = json_data['access_token']
         session['refresh_token'] = json_data['refresh_token']
-        session['user_id'] = json_data['user_id']
+        session['id'] = json_data['id']
 
         if "keep_me_logged_in" in post_data:
             if post_data["keep_me_logged_in"] == "true":
@@ -174,36 +164,30 @@ def set_new_pass(email, random):
                 error="invalid-code"
             )
 
-        url = current_app.config["USER_API_URL"] + "/update_pass"
-        headers = {"Content-type": "application/json", "Accept": "text/plain"}
         payload = {}
         payload["password"] = request.form["password"]
         payload["email"] = get_email.lower()
         payload["code"] = get_random
 
-        response = requests.request(
-            "PUT", url, data=json.dumps(payload), headers=headers
-        )
+        json_data = UserApi().update_pass(payload)
 
-        json_data = json.loads(response.text)
-        if response.status_code != 200:
-            # code u001 has been specified to be an incorrect email and
-            # password combination so we should check for this
-            if json_data["message"] == "Invalid code" or json_data["message"] == "Code not sent":
-                return render_template(
-                    "pages/new_pass.html",
-                    error="invalid-code"
-                )
-            elif json_data["message"] == "Code expired":
-                return render_template(
-                    "pages/new_pass.html",
-                    error="expired"
-                )
-            else:
-                return render_template(
-                    "pages/new_pass.html",
-                    error="pass-not-set"
-                )
+        # code u001 has been specified to be an incorrect email and
+        # password combination so we should check for this
+        if json_data["message"] == "Invalid code" or json_data["message"] == "Code not sent":
+            return render_template(
+                "pages/new_pass.html",
+                error="invalid-code"
+            )
+        elif json_data["message"] == "Code expired":
+            return render_template(
+                "pages/new_pass.html",
+                error="expired"
+            )
+        else:
+            return render_template(
+                "pages/new_pass.html",
+                error="pass-not-set"
+            )
 
         return render_template("pages/login.html", error="new-pass-set")
 
