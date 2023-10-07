@@ -26,9 +26,16 @@ def extract_data():
 @jwt_util.check_jwt
 def documents():
     session['info-message'] = ''
+
+    get_doc_names_list = UserApi().get_documents(session['id'])
+
+    get_document_urls = UserApi().get_documents(session['id'], get_doc_names_list)
+
+    
     return render_template(
         "pages/documents-home.html",
-        session=session['info-message']
+        session=session['info-message'],
+        get_document_urls=get_document_urls.get('urls', {})
     )
 
 

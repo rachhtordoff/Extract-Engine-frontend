@@ -21,6 +21,11 @@ class UserApi:
         response = requests.request("POST", url, data=json.dumps(data), headers=self.headers)
         return json.loads(response.text)
 
+    def _make_get_request(self, endpoint, data):
+        url = f"{self.base_url}/{endpoint}"
+        response = requests.request("GET", url, data=json.dumps(data), headers=self.headers)
+        return json.loads(response.text)
+
     def register_user(self, data):
         endpoint = "register"
         return self._make_post_request(endpoint, data)
@@ -39,4 +44,12 @@ class UserApi:
 
     def new_extract(self, data):
         endpoint = "new_extract"
+        return self._make_post_request(endpoint, data)
+
+    def get_documents(self, folder_id):
+        endpoint = f"get_document_list/{folder_id}"
+        return self._make_get_request(endpoint, data)
+
+    def get_document_urls(self, folder_id, data):
+        endpoint = f"get_documents/{folder_id}"
         return self._make_post_request(endpoint, data)

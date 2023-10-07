@@ -45,14 +45,14 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="./extract">
+        <a class="nav-link collapsed" href="./extract">
           <i class="bi bi-grid"></i>
           <span>New extract</span>
         </a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="./documents">
+        <a class="nav-link" href="./documents">
           <i class="bi bi-grid"></i>
           <span>Documents</span>
         </a>
@@ -84,15 +84,15 @@
     {% endif %}
   
     <div class="pagetitle">
-      <h1>New extract
+      <h1>Documents
       </h1>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
       <div class="row">
-
+        {% for url in get_document_urls %}
         <!-- Left side columns -->
-        <div class="col-lg-6">
+        <div class="col-2">
           <div class="row">
 
             <!-- Sales Card -->
@@ -100,52 +100,9 @@
               <div class="card info-card sales-card">
 
                 <div class="card-body">
-                  <h5 class="card-title">Upload <span>| PDF, Zip of PDFs or CSV of URLS only</span></h5>
-                <p>Extract data from a PDF or zipfile of PDFs, or webscrape & extract data from a CSV of URLs (Please don't inlude headers in the csv)</p>
-
-                <!-- Vertical Form -->
-                <form class="row g-3 needs-validation" id="document-upload-form" action="./document-upload" method="POST">
-                  <div class="col-12">
-                  <label for="inputNanme4" class="form-label">File</label>
-                  <input type="file" class="form-control" id="inputNanme4" name="upload_file">
-                  <div class="invalid-feedback">
-                    Please add a file
-                  </div>
-                </div>
-
-                  <div class="col-12">
-                    <select name="output_type" id="inputState" class="form-select" required>
-                      <option selected>Output Type</option>
-                      <option value='CSV'>CSV</option>
-                    </select>
-                    <div class="invalid-feedback">
-                      Please specify an output type
-                    </div>
-                  </div>
-                
-                <div class="col-12">
-                  <label for="inputphrases4" class="form-label">Phrases to extract</label><br>
-                  <p>Example:
-                    <ul>
-                      <li>name</li>
-                      <li>hair colour</li>
-                      <li>company name</li>
-                    </ul>
-                  </p>
-                  <button type="button" class="btn btn-outline-primary"  onclick="addInputfile()">Add phrase</button>
-                    <div name="input_phrases" id="inputContainer"></div>
-
-                    <div class="invalid-feedback">
-                      Please add at least one phrase
-                    </div>
-                </div>
-
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  <button type="reset" class="btn btn-secondary">Reset</button>
-                </div>
-              </form><!-- Vertical Form -->
-
+                  <h5 class="card-title">url</h5>
+ 
+<p>{{get_document_urls[url]}}</p>
                 </div>
 
               </div>
@@ -153,70 +110,7 @@
           </div>
         </div><!-- End Left side columns -->
 
-
-
-        <!-- Left side columns -->
-        <div class="col-lg-6">
-          <div class="row">
-
-            <!-- Sales Card -->
-            <div class="col-xxl-12 col-md-12">
-              <div class="card info-card sales-card">
-
-                <div class="card-body">
-                  <h5 class="card-title">URL<span>| Single or list </span></h5>
-
-
-              <!-- Vertical Form -->
-              <form class="row g-3 needs-validation" id="document-url-form" action="./url-list" method="POST">
-                <div class="col-12">
-                  <label for="inputNanme5" class="form-label">URL(s)</label>
-                  <textarea class="form-control" name="urls" id="inputNanme5" rows="5" placeholder="Paste one URL per line"></textarea>
-                  <div class="invalid-feedback">
-                    Please add at least one url
-                  </div>
-                </div>
-
-            
-                <div class="col-12">
-                  <select name="output_typeurl" id="inputState2" class="form-select">
-                    <option selected>Output Type</option>
-                    <option value='CSV'>CSV</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please specify an output type
-                  </div>
-                </div>
-                <div class="col-12">
-                  <label for="inputphrases42" class="form-label">Phrases to extract</label><br>
-                  <p>Example:
-                    <ul>
-                      <li>name</li>
-                      <li>hair colour</li>
-                      <li>company name</li>
-                    </ul>
-                  </p>
-                  <button type="button" class="btn btn-outline-primary"  onclick="addInputurls()">Add phrase</button>
-                    <div name="input_phrases" id="inputContainer22"></div>
-                    <div class="invalid-feedback">
-                      Please add at least one phrase
-                    </div>
-                </div>
-
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  <button type="reset" class="btn btn-secondary">Reset</button>
-                </div>
-              </form><!-- Vertical Form -->
-
-                </div>
-
-              </div>
-            </div><!-- End Sales Card -->
-          </div>
-        </div><!-- End Left side columns -->
-
-
+        {% endfor %}
       </div>
     </section>
 
