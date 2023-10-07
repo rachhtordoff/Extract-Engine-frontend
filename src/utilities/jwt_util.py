@@ -18,6 +18,30 @@ def check_jwt(f):
 
         try:
             decode_token(token)
+        except (YourSpecificExpiredSignatureError):  # Replace with the specific exception for expired tokens in your library
+            refresh_token = session.get('refresh_token', None)
+            if not refresh_token:
+                return redirect('./login'), 401
+            # If using Flask-Restful, you may want to use 'reqparse' instead of 'requests'
+            url = current_app.config["USER_API_URL"] + "/token/refresh"
+            new_token_response = requests.post(url, json={'refresh_token': refresh_token})
+            
+            if new_token_response.status_code != 200:
+                return redirect('./login'), 401
+            
+            new_token = new_token_response.json().get('access_token')
+            session['access_token'] = new_token
+
+            try:
+                decode_token(new_token)
+            except (NoAuthorizationError,
+                    JWTDecodeError,
+                    InvalidHeaderError,
+                    WrongTokenError,
+                    RevokedTokenError,
+                    FreshTokenRequired):
+                return redirect('./login'), 401
+
         except (NoAuthorizationError,
                 JWTDecodeError,
                 InvalidHeaderError,
@@ -29,6 +53,7 @@ def check_jwt(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
 
 def generate_test_jwt(testemail="test_user@gmail.com"):
     """Generate a test JWT for a given identity."""

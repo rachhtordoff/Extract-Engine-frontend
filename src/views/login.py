@@ -4,7 +4,8 @@ from flask import (
     render_template,
     request,
     current_app,
-    session
+    session,
+    jsonify
 )
 import requests
 import json
@@ -103,12 +104,10 @@ def display_login_page():
         payload = {}
         payload["email"] = post_data["email"].lower()
         payload["password"] = post_data["password"]
-
         json_data = UserApi().login(payload)
-
         # code u001 has been specified to be an incorrect email and
         # password combination so we should check for this
-        if json_data["message"] == "Invalid credentials":
+        if json_data.get("message") == "Invalid credentials":
             return render_template(
                 "pages/login.html",
                 error="error-password-username"
@@ -116,7 +115,7 @@ def display_login_page():
         session['email'] = json_data['email']
         session['access_token'] = json_data['access_token']
         session['refresh_token'] = json_data['refresh_token']
-        session['id'] = json_data['id']
+        session['id'] = json_data['user_id']
 
         if "keep_me_logged_in" in post_data:
             if post_data["keep_me_logged_in"] == "true":

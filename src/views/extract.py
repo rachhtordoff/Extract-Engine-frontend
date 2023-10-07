@@ -72,7 +72,6 @@ def url_list():
         "extraction_type": 'urls'
     }
 
-
     get_extract_data =  UserApi().new_extract(new_extract)
 
     create_doc = {
@@ -80,9 +79,9 @@ def url_list():
         "phrases_list": phrases_list,
         "output_typeurl": post_data.get('output_typeurl'),
         "type": 'urls',
-        "id": get_extract_data['id']
+        "id": get_extract_data[0]['id'],
+        "access_token": session['access_token']
     }
-
 
     sqs.send_create_doc_data(create_doc)
 
