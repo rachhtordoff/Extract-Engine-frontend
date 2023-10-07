@@ -21,9 +21,9 @@ class UserApi:
         response = requests.request("POST", url, data=json.dumps(data), headers=self.headers)
         return json.loads(response.text)
 
-    def _make_get_request(self, endpoint, data):
+    def _make_get_request(self, endpoint):
         url = f"{self.base_url}/{endpoint}"
-        response = requests.request("GET", url, data=json.dumps(data), headers=self.headers)
+        response = requests.request("GET", url, headers=self.headers)
         return json.loads(response.text)
 
     def register_user(self, data):
@@ -48,7 +48,7 @@ class UserApi:
 
     def get_documents(self, folder_id):
         endpoint = f"get_document_list/{folder_id}"
-        return self._make_get_request(endpoint, data)
+        return self._make_get_request(endpoint)
 
     def get_document_urls(self, folder_id, data):
         endpoint = f"get_documents/{folder_id}"

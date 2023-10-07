@@ -91,8 +91,10 @@
     <section class="section dashboard">
       <div class="row">
         {% for url in get_document_urls %}
+        {% for key, value in url.items() %}
+
         <!-- Left side columns -->
-        <div class="col-2">
+        <div class="col-3">
           <div class="row">
 
             <!-- Sales Card -->
@@ -100,15 +102,16 @@
               <div class="card info-card sales-card">
 
                 <div class="card-body">
-                  <h5 class="card-title">url</h5>
+                  <h5 class="card-title">{{key}}</h5>
  
-<p>{{get_document_urls[url]}}</p>
+                <a href="{{value}}">Download</a>
                 </div>
 
               </div>
             </div><!-- End Sales Card -->
           </div>
         </div><!-- End Left side columns -->
+        {% endfor %}
 
         {% endfor %}
       </div>

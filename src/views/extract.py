@@ -29,11 +29,10 @@ def documents():
 
     get_doc_names_list = UserApi().get_documents(session['id'])
 
-    get_document_urls = UserApi().get_documents(session['id'], get_doc_names_list)
+    get_document_urls = UserApi().get_document_urls(session['id'], get_doc_names_list)
 
-    
     return render_template(
-        "pages/documents-home.html",
+        "pages/document-home.html",
         session=session['info-message'],
         get_document_urls=get_document_urls.get('urls', {})
     )
