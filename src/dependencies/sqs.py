@@ -29,3 +29,8 @@ class SqsSender(object):
 def send_create_doc_data(json_data):
     SqsSender().send_message(json_data)
     return "sent"
+
+
+def send_create_doc_data_file(json_data):
+    SqsSender().send_message(json_data)
+    return "sent"

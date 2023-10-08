@@ -21,6 +21,12 @@ class UserApi:
         response = requests.request("POST", url, data=json.dumps(data), headers=self.headers)
         return json.loads(response.text)
 
+    def _make_post_request_files(self, endpoint, files):
+        url = f"{self.base_url}/{endpoint}"
+        headers = {'Authorization': f"Bearer {session.get('access_token')}"}
+        response = requests.post(url, files=files, headers=headers)
+        return json.loads(response.text)
+
     def _make_get_request(self, endpoint):
         url = f"{self.base_url}/{endpoint}"
         response = requests.request("GET", url, headers=self.headers)
@@ -53,3 +59,9 @@ class UserApi:
     def get_document_urls(self, folder_id, data):
         endpoint = f"get_documents/{folder_id}"
         return self._make_post_request(endpoint, data)
+
+    def post_document(self, folder_id, file_name, file_content):
+        endpoint = f"post_document_extract/{folder_id}"
+        file_store = {file_name: file_content}
+        return self._make_post_request_files(endpoint, file_store)
+

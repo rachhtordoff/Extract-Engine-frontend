@@ -9,6 +9,8 @@ from flask import (
 from src.utilities import jwt_util
 from src.dependencies import sqs
 from src.dependencies.users_api import UserApi
+from src import config
+import os
 
 extract = Blueprint("extract", __name__)
 
@@ -38,36 +40,56 @@ def documents():
     )
 
 
-@extract.route('/dashboard-data')
-def dashboard():
-
-    pass
-
-
-@extract.route('/document-data')
-def document():
-    # Your document logic here
-    # Example:
-    # return jsonify(documentHTML='<p>Document data here...</p>')
-    pass
-
-
 @extract.route("/document-upload", methods=['POST'])
 @jwt_util.check_jwt
 def document_upload():
+    file = request.files['file']
+    if file and allowed_file(file.filename):
+        file_content = file.read()
+        if len(file_content) < config.MAX_FILE_SIZE:
+            file_name =os.path.splitext(file.filename)[0]
+        else:
+            session['info-message'] = 'file-too-large'
+            return redirect('./extract')
+    else:
+        if not file:
+            session['info-message'] = 'no-file-selected'
+            return redirect('./extract')
+
+        if not allowed_file(file.filename):
+            session['info-message'] = 'not-allowed-file'
+            return redirect('./extract')
 
     post_data = request.form
 
     phrases_list = request.form.getlist('phrases[]')
-    return jsonify(phrases_list)
 
+    new_extract = {
+        "user_id": session['id'],
+        "file_Type": post_data.get('output_typeurl'),
+        "extraction_type": 'urls'
+    }
+    
+    get_extract_data =  UserApi().new_extract(new_extract)
+    new_doc_upload =  UserApi().post_document(get_extract_data[0]['id'], file_name, file_content)
+
+    create_doc = {
+        "phrases_list": phrases_list,
+        "output_typeurl": post_data.get('output_typeurl'),
+        "type": 'file',
+        'filename': file_name,
+        "id": get_extract_data[0]['id'],
+        "access_token": session['access_token']
+    }
+
+    sqs.send_create_doc_data(create_doc)
+
+    session['info-message'] = 'document-creating'
     return redirect('./extract')
-
 
 @extract.route("/url-list", methods=['POST'])
 @jwt_util.check_jwt
 def url_list():
-
     post_data = request.form
     phrases_list = request.form.getlist('phrases[]')
     url_list = post_data.get('urls', '').split("\r\n")
@@ -104,3 +126,7 @@ def extract_pdf():
     return jsonify(post_data)
 
     return redirect('./extract')
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1] in config.ALLOWED_EXTENSIONS

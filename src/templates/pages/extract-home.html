@@ -80,9 +80,22 @@
     <div class="alert alert-info">
       <strong>INFO!</strong> Your document is being created and will appear in your documents shortly
     </div>
+    {% elif session == "file-too-large" %}
+    <div class="alert alert-danger">
+      <strong>Error!</strong> Your file is too large
+    </div>
+    {% elif session == "no-file-selected" %}
+    <div class="alert alert-danger">
+      <strong>Error!</strong> Please add a file
+    </div>
+    {% elif session == "not-allowed-file" %}
+    <div class="alert alert-danger">
+      <strong>Error!</strong> You can only upload a CSV, PDF OR ZIP file of PDFs
+    </div>
     {% endif %}
     {% endif %}
   
+
     <div class="pagetitle">
       <h1>New extract
       </h1>
@@ -103,11 +116,11 @@
                   <h5 class="card-title">Upload <span>| PDF, Zip of PDFs or CSV of URLS only</span></h5>
                 <p>Extract data from a PDF or zipfile of PDFs, or webscrape & extract data from a CSV of URLs (Please don't inlude headers in the csv)</p>
 
-                <!-- Vertical Form -->
-                <form class="row g-3 needs-validation" id="document-upload-form" action="./document-upload" method="POST">
+                <form class="row g-3 needs-validation" id="document-upload-form" enctype="multipart/form-data" action="./document-upload" method="POST">
                   <div class="col-12">
                   <label for="inputNanme4" class="form-label">File</label>
-                  <input type="file" class="form-control" id="inputNanme4" name="upload_file">
+                  <input class="form-control"  name="file"  type="file" multiple>
+
                   <div class="invalid-feedback">
                     Please add a file
                   </div>
