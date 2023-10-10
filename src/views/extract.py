@@ -31,7 +31,7 @@ def documents():
 
     get_doc_names_list = UserApi().get_documents(session['id'])
 
-    get_document_urls = UserApi().get_document_urls(session['id'], get_doc_names_list)
+    get_document_urls = UserApi().get_document_urls(get_doc_names_list)
 
     return render_template(
         "pages/document-home.html",
@@ -47,7 +47,7 @@ def document_upload():
     if file and allowed_file(file.filename):
         file_content = file.read()
         if len(file_content) < config.MAX_FILE_SIZE:
-            file_name =os.path.splitext(file.filename)[0]
+            file_name = file.filename
         else:
             session['info-message'] = 'file-too-large'
             return redirect('./extract')
@@ -66,7 +66,7 @@ def document_upload():
 
     new_extract = {
         "user_id": session['id'],
-        "file_Type": post_data.get('output_typeurl'),
+        "file_Type": post_data.get('output_type'),
         "extraction_type": 'urls'
     }
     
@@ -75,7 +75,7 @@ def document_upload():
 
     create_doc = {
         "phrases_list": phrases_list,
-        "output_typeurl": post_data.get('output_typeurl'),
+        "output_typeurl": post_data.get('output_type'),
         "type": 'file',
         'filename': file_name,
         "id": get_extract_data[0]['id'],

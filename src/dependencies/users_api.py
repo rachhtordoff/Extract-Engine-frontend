@@ -56,8 +56,8 @@ class UserApi:
         endpoint = f"get_document_list/{folder_id}"
         return self._make_get_request(endpoint)
 
-    def get_document_urls(self, folder_id, data):
-        endpoint = f"get_documents/{folder_id}"
+    def get_document_urls(self, data):
+        endpoint = f"get_documents"
         return self._make_post_request(endpoint, data)
 
     def post_document(self, folder_id, file_name, file_content):
