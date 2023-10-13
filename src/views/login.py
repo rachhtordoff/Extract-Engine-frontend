@@ -4,8 +4,7 @@ from flask import (
     render_template,
     request,
     current_app,
-    session,
-    jsonify
+    session
 )
 import requests
 import json
@@ -32,7 +31,7 @@ def register():
             )
 
         else:
-            UsersApi().create_folder(json_data['id'])
+            UserApi().create_folder(json_data['id'])
 
             return redirect('./login')
     return render_template('pages/register.html')
@@ -181,11 +180,6 @@ def set_new_pass(email, random):
             return render_template(
                 "pages/new_pass.html",
                 error="expired"
-            )
-        else:
-            return render_template(
-                "pages/new_pass.html",
-                error="pass-not-set"
             )
 
         return render_template("pages/login.html", error="new-pass-set")

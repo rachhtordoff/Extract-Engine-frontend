@@ -2,17 +2,18 @@ from src import config
 import boto3
 import json
 
+
 class SqsSender(object):
 
     def __init__(self):
 
         self.sqs = boto3.resource('sqs',
-                        region_name='eu-west-2',
-                        aws_access_key_id= config.aws_access_key_id,
-                        aws_secret_access_key= config.aws_secret_access_key)
+                                  region_name='eu-west-2',
+                                  aws_access_key_id=config.aws_access_key_id,
+                                  aws_secret_access_key=config.aws_secret_access_key)
 
     def __open_sqs_connection(self):
-        self.queue = self.sqs.get_queue_by_name(QueueName= config.SQS_QUEUE_NAME)
+        self.queue = self.sqs.get_queue_by_name(QueueName=config.SQS_QUEUE_NAME)
 
     def send_message(self, message):
         self.__open_sqs_connection()
@@ -27,10 +28,5 @@ class SqsSender(object):
 
 
 def send_create_doc_data(json_data):
-    SqsSender().send_message(json_data)
-    return "sent"
-
-
-def send_create_doc_data_file(json_data):
     SqsSender().send_message(json_data)
     return "sent"

@@ -23,5 +23,5 @@ aws_secret_access_key = os.environ['aws_secret_access_key']
 SQS_QUEUE_NAME = os.environ['SQS_QUEUE_NAME']
 LOCALSQS = os.environ['LOCALSQS']
 
-ALLOWED_EXTENSIONS = set(['csv','zip', 'pdf', 'Pdf','PDF', 'CSV', 'ZIP'])
+ALLOWED_EXTENSIONS = set(['csv', 'zip', 'pdf', 'Pdf', 'PDF', 'CSV', 'ZIP'])
 MAX_FILE_SIZE = 10000000

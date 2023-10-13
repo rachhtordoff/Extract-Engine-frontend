@@ -57,11 +57,10 @@ class UserApi:
         return self._make_get_request(endpoint)
 
     def get_document_urls(self, data):
-        endpoint = f"get_documents"
+        endpoint = "get_documents"
         return self._make_post_request(endpoint, data)
 
     def post_document(self, folder_id, file_name, file_content):
         endpoint = f"post_document_extract/{folder_id}"
         file_store = {file_name: file_content}
         return self._make_post_request_files(endpoint, file_store)
-

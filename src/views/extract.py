@@ -10,7 +10,6 @@ from src.utilities import jwt_util
 from src.dependencies import sqs
 from src.dependencies.users_api import UserApi
 from src import config
-import os
 
 extract = Blueprint("extract", __name__)
 
@@ -69,9 +68,9 @@ def document_upload():
         "file_Type": post_data.get('output_type'),
         "extraction_type": 'urls'
     }
-    
-    get_extract_data =  UserApi().new_extract(new_extract)
-    new_doc_upload =  UserApi().post_document(get_extract_data[0]['id'], file_name, file_content)
+
+    get_extract_data = UserApi().new_extract(new_extract)
+    UserApi().post_document(get_extract_data[0]['id'], file_name, file_content)
 
     create_doc = {
         "phrases_list": phrases_list,
@@ -87,6 +86,7 @@ def document_upload():
     session['info-message'] = 'document-creating'
     return redirect('./extract')
 
+
 @extract.route("/url-list", methods=['POST'])
 @jwt_util.check_jwt
 def url_list():
@@ -100,7 +100,7 @@ def url_list():
         "extraction_type": 'urls'
     }
 
-    get_extract_data =  UserApi().new_extract(new_extract)
+    get_extract_data = UserApi().new_extract(new_extract)
 
     create_doc = {
         "url_list": url_list,
@@ -117,7 +117,6 @@ def url_list():
     return redirect('./extract')
 
 
-
 @extract.route("/extract_pdf", methods=['POST'])
 @jwt_util.check_jwt
 def extract_pdf():
@@ -126,6 +125,7 @@ def extract_pdf():
     return jsonify(post_data)
 
     return redirect('./extract')
+
 
 def allowed_file(filename):
     return '.' in filename and \
