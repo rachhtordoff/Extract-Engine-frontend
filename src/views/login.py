@@ -61,18 +61,6 @@ def reset_pass():
         response = requests.request(
             "POST", url, data=json.dumps(payload), headers=headers
         )
-
-        json_data = json.loads(response.text)
-
-        if response.status_code != 200:
-            # code u001 has been specified to be an incorrect email and
-            # password combination so we should check for this
-            if json_data["error_code"] == "u001":
-                return render_template(
-                    "pages/new_pass.html",
-                    error="reset-pass-not-sent"
-                )
-
         url = current_app.config["USER_API_URL"] + "/update"
 
         payload = {}
@@ -86,6 +74,17 @@ def reset_pass():
         )
 
         json_data = json.loads(response.text)
+
+
+        if response.status_code != 200:
+            # code u001 has been specified to be an incorrect email and
+            # password combination so we should check for this
+            if json_data["error_code"] == "u001":
+                return render_template(
+                    "pages/new_pass.html",
+                    error="reset-pass-not-sent"
+                )
+
 
         return render_template(
             "pages/login.html", error="reset-pass-sent"
