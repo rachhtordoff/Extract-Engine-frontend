@@ -75,7 +75,6 @@ def reset_pass():
 
         json_data = json.loads(response.text)
 
-
         if response.status_code != 200:
             # code u001 has been specified to be an incorrect email and
             # password combination so we should check for this
@@ -84,7 +83,6 @@ def reset_pass():
                     "pages/new_pass.html",
                     error="reset-pass-not-sent"
                 )
-
 
         return render_template(
             "pages/login.html", error="reset-pass-sent"

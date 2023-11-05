@@ -24,4 +24,4 @@ SQS_QUEUE_NAME = os.environ['SQS_QUEUE_NAME']
 LOCALSQS = os.environ['LOCALSQS']
 
 ALLOWED_EXTENSIONS = set(['csv', 'zip', 'pdf', 'Pdf', 'PDF', 'CSV', 'ZIP'])
-MAX_FILE_SIZE = 10000000
+MAX_FILE_SIZE = 1000000000000

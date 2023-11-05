@@ -92,6 +92,7 @@
       <div class="row">
         {% for url in get_document_urls %}
         {% for key, value in url.items() %}
+        {% if key != 'null' %}
 
         <!-- Left side columns -->
         <div class="col-3">
@@ -111,6 +112,8 @@
             </div><!-- End Sales Card -->
           </div>
         </div><!-- End Left side columns -->
+        {% endif %}
+
         {% endfor %}
 
         {% endfor %}

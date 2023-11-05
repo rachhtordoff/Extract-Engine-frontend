@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.9
 MAINTAINER Rachael Tordoff
 
 RUN pip3 -q install gunicorn==19.9.0 eventlet==0.24.1
