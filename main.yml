@@ -1,0 +1,27 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and push Docker image
+      run: |
+        REPO_NAME="$(echo ${{ github.repository }} | cut -d'/' -f2)"
+        docker build -t test .
+        docker tag test ${{ secrets.REGISTRY_URL }}/${REPO_NAME}:${{ github.ref_name }}
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u "${{ secrets.REGISTRY_USER }}" --password-stdin registry.jacobscodingstuff.com
+        docker push ${{ secrets.REGISTRY_URL }}/${REPO_NAME}:${{ github.ref_name }}
