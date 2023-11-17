@@ -22,3 +22,4 @@ Flask-Testing
 flake8
 blinker
 boto3
+Werkzeug==2.2.2
