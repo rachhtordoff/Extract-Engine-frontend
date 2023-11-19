@@ -1,6 +1,6 @@
 dnspython==1.16.0
 elastic-apm==4.2.2
-eventlet==0.24.1
+eventlet
 Flask==2.2.2
 Flask-LogConfig==0.4.2
 Flask-Script==2.0.5
@@ -24,4 +24,4 @@ Flask-Testing
 flake8
 blinker
 boto3
-Werkzeug==2.3.7
+Werkzeug==3.0.1
