@@ -13,6 +13,7 @@ from src import config
 
 extract = Blueprint("extract", __name__)
 
+
 @extract.route("/")
 @extract.route("/extract")
 @jwt_util.check_jwt
